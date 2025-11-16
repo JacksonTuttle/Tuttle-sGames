@@ -21,6 +21,9 @@ export default function CreateAccount() {
   });
 
   const [passwordStrength, setPasswordStrength] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
   // Live validation logic
   useEffect(() => {
@@ -150,53 +153,71 @@ export default function CreateAccount() {
 
           {/* PASSWORD */}
           <label className={styles.label}>Password</label>
-          <div className={styles.passwordWrapper}>
+          <div className={styles.passwordInputContainer}>
             <input
               className={styles.input}
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={form.password}
               onChange={handleChange}
               placeholder="Password"
             />
 
-            {/* Error Message */}
-            {errors.password && (
-              <p className={styles.errorText}>{errors.password}</p>
-            )}
-
-            {/* Strength Bar */}
-            {form.password && (
-              <div className={styles.strengthContainer}>
-                <div
-                  className={`${styles.strengthBar} ${
-                    passwordStrength === "Weak"
-                      ? styles.strengthWeak
-                      : passwordStrength === "Medium"
-                      ? styles.strengthMedium
-                      : passwordStrength === "Strong"
-                      ? styles.strengthStrong
-                      : ""
-                  }`}
-                ></div>
-              </div>
-          )}
+            {/* Eye Icon */}
+            <span
+              className={styles.eyeIcon}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </span>
           </div>
 
+          {errors.password && (
+            <p className={styles.errorText}>{errors.password}</p>
+          )}
+
+          {/* Strength Bar */}
+          {form.password && (
+            <div className={styles.strengthContainer}>
+              <div
+                className={`${styles.strengthBar} ${
+                  passwordStrength === "Weak"
+                    ? styles.strengthWeak
+                    : passwordStrength === "Medium"
+                    ? styles.strengthMedium
+                    : passwordStrength === "Strong"
+                    ? styles.strengthStrong
+                    : ""
+                }`}
+              ></div>
+            </div>
+          )}
 
           {/* CONFIRM PASSWORD */}
           <label className={styles.label}>Confirm Password</label>
-          <input
-            className={styles.input}
-            type="password"
-            name="confirmPassword"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            placeholder="Confirm Password"
-          />
+          <div className={styles.passwordInputContainer}>
+            <input
+              className={styles.input}
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm Password"
+            />
+
+            {/* Eye Icon */}
+            <span
+              className={styles.eyeIcon}
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? "🙈" : "👁️"}
+            </span>
+          </div>
+
           {errors.confirmPassword && (
             <p className={styles.errorText}>{errors.confirmPassword}</p>
           )}
+
 
           {/* SUBMIT */}
           <button
