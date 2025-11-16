@@ -1,0 +1,44 @@
+.home-container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #000; /* BLACK BACKGROUND */
+  color: white;     /* Default text color */
+}
+
+/* The Main Area Where Pages Render */
+.page-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Bottom Navigation Banner */
+.bottom-nav {
+  height: 65px;
+  background: rgba(0, 0, 0, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.nav-btn.active {
+  color: #4fd1c5;
+  font-weight: bold;
+  text-shadow: 0 0 10px #4fd1c5;
+}
