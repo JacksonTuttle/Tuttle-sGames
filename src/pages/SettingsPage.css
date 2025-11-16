@@ -1,0 +1,44 @@
+.settings-item {
+  width: 100%;
+  padding: 15px;
+  background: #222;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  font-size: 18px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 65px); /* subtract bottom banner height */
+  padding: 20px;
+  color: white;
+}
+
+.settings-content {
+  flex: 1; /* pushes logout button down */
+}
+
+.settings-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 15px;
+  background: #ff4d4d;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+  margin-bottom: 10px; /* small gap above banner */
+}
+
+.logout-btn:hover {
+  background: #e04343;
+}

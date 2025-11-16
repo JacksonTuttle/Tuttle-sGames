@@ -24,7 +24,7 @@ export default function Login() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/test"); // or your actual homepage
+      navigate("/home"); // or your actual homepage
     } catch (err) {
       setError("Invalid email or password.");
     }
