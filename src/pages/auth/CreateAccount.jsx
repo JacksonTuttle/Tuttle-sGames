@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { 
+  createUserWithEmailAndPassword, 
+  fetchSignInMethodsForEmail 
+} from "firebase/auth";
+import { auth } from "../../firebase";
 import AuthLayout from "./AuthLayout";
 import styles from "./Login.module.css";
 
@@ -23,7 +28,10 @@ export default function CreateAccount() {
   const [passwordStrength, setPasswordStrength] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [firebaseError, setFirebaseError] = useState("");
 
+  const [phoneInUse, setPhoneInUse] = useState(false);
+  const [checkingPhone, setCheckingPhone] = useState(false);
 
   // Live validation logic
   useEffect(() => {
@@ -32,10 +40,33 @@ export default function CreateAccount() {
     validateConfirmPassword(form.password, form.confirmPassword);
   }, [form.phone, form.password, form.confirmPassword]);
 
+  // Firebase check: is phone already used?
+  useEffect(() => {
+    const raw = form.phone.replace(/\D/g, "");
+    if (raw.length !== 10) {
+      setPhoneInUse(false);
+      return;
+    }
+
+    const email = `${raw}@tuttlesgames.com`;
+
+    const timeout = setTimeout(async () => {
+      setCheckingPhone(true);
+      try {
+        const methods = await fetchSignInMethodsForEmail(auth, email);
+        setPhoneInUse(methods.length > 0);
+      } catch (err) {
+        console.error("Phone check failed:", err);
+      }
+      setCheckingPhone(false);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [form.phone]);
+
   const handleChange = (e) => {
     let { name, value } = e.target;
 
-    // Only allow numbers, auto-format phone number
     if (name === "phone") {
       value = formatPhoneNumber(value);
     }
@@ -56,12 +87,10 @@ export default function CreateAccount() {
     let strength = "";
     let error = "";
 
-    // Password rules
     if (value.length < 8) error = "Password must be at least 8 characters.";
     else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value))
       error = "Password must include one special character.";
 
-    // Strength meter
     if (!value) strength = "";
     else if (value.length < 8) strength = "Weak";
     else if (/[!@#$%^&*]/.test(value)) strength = "Strong";
@@ -88,34 +117,45 @@ export default function CreateAccount() {
   };
 
   const allFieldsFilled =
-    form.firstName && form.lastName && form.phone && form.password && form.confirmPassword;
+    form.firstName &&
+    form.lastName &&
+    form.phone &&
+    form.password &&
+    form.confirmPassword;
 
   const noErrors =
     !errors.phone && !errors.password && !errors.confirmPassword;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setFirebaseError("");
 
-    if (!allFieldsFilled || !noErrors) return;
+    if (!allFieldsFilled || !noErrors || phoneInUse) return;
 
-    // Save account (simple local system for now)
-    const userData = {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      phone: form.phone.replace(/\D/g, ""), // raw phone
-      password: form.password,
-    };
+    const rawPhone = form.phone.replace(/\D/g, "");
+    const email = `${rawPhone}@tuttlesgames.com`;
 
-    localStorage.setItem("tuttlesgames_user", JSON.stringify(userData));
+    try {
+      await createUserWithEmailAndPassword(auth, email, form.password);
 
-    // Redirect to login
-    navigate("/");
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+
+      if (err.code === "auth/email-already-in-use") {
+        setFirebaseError("An account with this phone number already exists.");
+      } else {
+        setFirebaseError("Failed to create account. Try again.");
+      }
+    }
   };
 
   return (
     <AuthLayout>
       <div className={styles.loginBox}>
         <h1 className={styles.title}>Create Account</h1>
+
+        {firebaseError && <p className={styles.errorText}>{firebaseError}</p>}
 
         <form onSubmit={handleSubmit}>
 
@@ -150,6 +190,9 @@ export default function CreateAccount() {
             maxLength={12}
           />
           {errors.phone && <p className={styles.errorText}>{errors.phone}</p>}
+          {phoneInUse && (
+            <p className={styles.errorText}>This phone number is already used.</p>
+          )}
 
           {/* PASSWORD */}
           <label className={styles.label}>Password</label>
@@ -163,7 +206,6 @@ export default function CreateAccount() {
               placeholder="Password"
             />
 
-            {/* Eye Icon */}
             <span
               className={styles.eyeIcon}
               onClick={() => setShowPassword(!showPassword)}
@@ -196,6 +238,7 @@ export default function CreateAccount() {
           {/* CONFIRM PASSWORD */}
           <label className={styles.label}>Confirm Password</label>
           <div className={styles.passwordInputContainer}>
+
             <input
               className={styles.input}
               type={showConfirmPassword ? "text" : "password"}
@@ -205,7 +248,6 @@ export default function CreateAccount() {
               placeholder="Confirm Password"
             />
 
-            {/* Eye Icon */}
             <span
               className={styles.eyeIcon}
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -218,15 +260,31 @@ export default function CreateAccount() {
             <p className={styles.errorText}>{errors.confirmPassword}</p>
           )}
 
-
           {/* SUBMIT */}
           <button
             className={styles.button}
             type="submit"
-            disabled={!allFieldsFilled || !noErrors}
+            disabled={
+              !allFieldsFilled ||
+              !noErrors ||
+              phoneInUse ||
+              checkingPhone
+            }
             style={{
-              opacity: !allFieldsFilled || !noErrors ? 0.5 : 1,
-              cursor: !allFieldsFilled || !noErrors ? "not-allowed" : "pointer",
+              opacity:
+                !allFieldsFilled ||
+                !noErrors ||
+                phoneInUse ||
+                checkingPhone
+                  ? 0.5
+                  : 1,
+              cursor:
+                !allFieldsFilled ||
+                !noErrors ||
+                phoneInUse ||
+                checkingPhone
+                  ? "not-allowed"
+                  : "pointer",
             }}
           >
             SUBMIT

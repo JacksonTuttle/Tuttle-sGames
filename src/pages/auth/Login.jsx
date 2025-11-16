@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase"; 
 import AuthLayout from "./AuthLayout";
 import styles from "./Login.module.css";
 
@@ -31,30 +33,28 @@ export default function Login() {
     }
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
 
     const rawPhone = phone.replace(/\D/g, "");
 
-    // Block login on invalid phone number
     if (phoneError || rawPhone.length < 10) {
       setError("Invalid phone number.");
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem("tuttlesgames_users")) || [];
+    // Convert phone to "email"
+    const email = `${rawPhone}@tuttlesgames.com`;
 
-    const foundUser = users.find(
-      (u) => u.phone === rawPhone && u.password === password
-    );
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
 
-    if (!foundUser) {
+      // Login success → redirect to test page
+      navigate("/test");
+    } catch (err) {
       setError("Invalid phone number or password.");
-      return;
     }
-
-    // Success → redirect to test page
-    navigate("/test");
   };
 
   return (
