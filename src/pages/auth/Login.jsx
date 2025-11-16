@@ -1,19 +1,48 @@
+import { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Login.module.css";
 
 export default function Login() {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+  const vid = videoRef.current;
+  if (!vid) return;
+
+  const playVideo = () => {
+    const playPromise = vid.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // iPhone won't play until user interacts → retry on first touch
+        const listener = () => {
+          vid.play();
+          window.removeEventListener("touchstart", listener);
+        };
+        window.addEventListener("touchstart", listener, { once: true });
+      });
+    }
+  };
+
+  // iPhone fires this event earliest
+  vid.addEventListener("loadedmetadata", playVideo);
+
+  return () => vid.removeEventListener("loadedmetadata", playVideo);
+}, []);
+
+
   return (
     <div className={styles.wrapper}>
-
-      {/* VIDEO BACKGROUND */}
+      
       <video
+        ref={videoRef}
         className={styles.video}
         autoPlay
         loop
         muted
         playsInline
+        preload="auto"
       >
-        <source src="/background.mp4" type="video/mp4" />
+        <source src={`${import.meta.env.BASE_URL}background.mp4`} type="video/mp4" />
       </video>
 
       {/* DARK OVERLAY FOR READABILITY */}
