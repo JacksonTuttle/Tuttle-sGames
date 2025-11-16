@@ -1,18 +1,22 @@
 import { Link } from "react-router-dom";
-import styles from "./ForgotPassword.module.css";
+import AuthLayout from "./AuthLayout";
+import styles from "./Login.module.css";
 
 export default function ForgotPassword() {
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Forgot Password</h1>
+    <AuthLayout>
+      <div className={styles.loginBox}>
+        <h1 className={styles.title}>Forgot Password</h1>
 
-      <input className={styles.input} placeholder="Enter your email" />
+        <label className={styles.label}>Phone Number</label>
+        <input className={styles.input} placeholder="Enter your phone number" />
 
-      <button className={styles.button}>Send Reset Link</button>
+        <button className={styles.button}>Send Text</button>
 
-      <Link to="/" className={styles.back}>
-        Back to Login
-      </Link>
-    </div>
+        <div className={styles.bottomText}>
+          <Link to="/">Back to Login</Link>
+        </div>
+      </div>
+    </AuthLayout>
   );
 }
