@@ -85,7 +85,7 @@
 /* BUTTON */
 .button {
   margin-top: 25px;
-  padding: 14px;
+  padding: 14px 40px;
   background: #2563eb;
   border: none;
   border-radius: 8px;
@@ -93,7 +93,12 @@
   color: white;
   cursor: pointer;
   font-weight: 700;
+  display: block;     
+  width: auto;         
+  margin-left: auto;   
+  margin-right: auto;  
 }
+
 
 .button:hover {
   background: #1e4ed8;
@@ -177,13 +182,6 @@
 .strengthStrong {
   width: 100%;
   background-color: #4caf50;
-}
-
-.passwordWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 12px;
 }
 
 /* Password input wrapper */
