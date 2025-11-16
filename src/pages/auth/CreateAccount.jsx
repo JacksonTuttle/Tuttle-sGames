@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { 
-  createUserWithEmailAndPassword, 
-  fetchSignInMethodsForEmail 
-} from "firebase/auth";
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "firebase/auth";
 import { auth } from "../../firebase";
 import AuthLayout from "./AuthLayout";
 import styles from "./Login.module.css";
@@ -14,82 +11,72 @@ export default function CreateAccount() {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
-    phone: "",
+    email: "",
     password: "",
     confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({
-    phone: "",
+    email: "",
     password: "",
     confirmPassword: "",
   });
 
   const [passwordStrength, setPasswordStrength] = useState("");
+  const [emailInUse, setEmailInUse] = useState(false);
+  const [checkingEmail, setCheckingEmail] = useState(false);
+  const [firebaseError, setFirebaseError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [firebaseError, setFirebaseError] = useState("");
 
-  const [phoneInUse, setPhoneInUse] = useState(false);
-  const [checkingPhone, setCheckingPhone] = useState(false);
-
-  // Live validation logic
+  // Live validation
   useEffect(() => {
-    validatePhone(form.phone);
+    validateEmail(form.email);
     validatePassword(form.password);
     validateConfirmPassword(form.password, form.confirmPassword);
-  }, [form.phone, form.password, form.confirmPassword]);
+  }, [form.email, form.password, form.confirmPassword]);
 
-  // Firebase check: is phone already used?
+  // Check if email already exists in Firebase
   useEffect(() => {
-    const raw = form.phone.replace(/\D/g, "");
-    if (raw.length !== 10) {
-      setPhoneInUse(false);
+    if (!form.email.includes("@") || !form.email.includes(".")) {
+      setEmailInUse(false);
       return;
     }
 
-    const email = `${raw}@tuttlesgames.com`;
-
     const timeout = setTimeout(async () => {
-      setCheckingPhone(true);
+      setCheckingEmail(true);
       try {
-        const methods = await fetchSignInMethodsForEmail(auth, email);
-        setPhoneInUse(methods.length > 0);
+        const methods = await fetchSignInMethodsForEmail(auth, form.email);
+        setEmailInUse(methods.length > 0);
       } catch (err) {
-        console.error("Phone check failed:", err);
+        console.error(err);
       }
-      setCheckingPhone(false);
+      setCheckingEmail(false);
     }, 300);
 
     return () => clearTimeout(timeout);
-  }, [form.phone]);
+  }, [form.email]);
 
   const handleChange = (e) => {
-    let { name, value } = e.target;
-
-    if (name === "phone") {
-      value = formatPhoneNumber(value);
-    }
-
+    const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
-  const validatePhone = (value) => {
-    const raw = value.replace(/\D/g, "");
-    if (raw.length < 10) {
-      setErrors((prev) => ({ ...prev, phone: "Phone number must be 10 digits." }));
+  const validateEmail = (value) => {
+    if (!value.includes("@") || !value.includes(".")) {
+      setErrors((prev) => ({ ...prev, email: "Enter a valid email address." }));
     } else {
-      setErrors((prev) => ({ ...prev, phone: "" }));
+      setErrors((prev) => ({ ...prev, email: "" }));
     }
   };
 
   const validatePassword = (value) => {
-    let strength = "";
     let error = "";
+    let strength = "";
 
     if (value.length < 8) error = "Password must be at least 8 characters.";
     else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value))
-      error = "Password must include one special character.";
+      error = "Password must contain one special character.";
 
     if (!value) strength = "";
     else if (value.length < 8) strength = "Weak";
@@ -108,47 +95,30 @@ export default function CreateAccount() {
     }
   };
 
-  const formatPhoneNumber = (value) => {
-    const raw = value.replace(/\D/g, "").slice(0, 10);
-
-    if (raw.length < 4) return raw;
-    if (raw.length < 7) return `${raw.slice(0, 3)}-${raw.slice(3)}`;
-    return `${raw.slice(0, 3)}-${raw.slice(3, 6)}-${raw.slice(6)}`;
-  };
-
   const allFieldsFilled =
-    form.firstName &&
-    form.lastName &&
-    form.phone &&
-    form.password &&
-    form.confirmPassword;
+    form.firstName && form.lastName && form.email && form.password && form.confirmPassword;
 
-  const noErrors =
-    !errors.phone && !errors.password && !errors.confirmPassword;
+  const noErrors = !errors.email && !errors.password && !errors.confirmPassword;
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setFirebaseError("");
+  e.preventDefault();
+  setFirebaseError("");
 
-    if (!allFieldsFilled || !noErrors || phoneInUse) return;
+  if (!allFieldsFilled || !noErrors || emailInUse) return;
 
-    const rawPhone = form.phone.replace(/\D/g, "");
-    const email = `${rawPhone}@tuttlesgames.com`;
+  try {
+    await createUserWithEmailAndPassword(auth, form.email, form.password);
+    navigate("/");
+  } catch (err) {
+    console.error(err);
 
-    try {
-      await createUserWithEmailAndPassword(auth, email, form.password);
-
-      navigate("/");
-    } catch (err) {
-      console.error(err);
-
-      if (err.code === "auth/email-already-in-use") {
-        setFirebaseError("An account with this phone number already exists.");
-      } else {
-        setFirebaseError("Failed to create account. Try again.");
-      }
+    if (err.code === "auth/email-already-in-use") {
+      setFirebaseError("This email is already registered. Please use another email.");
+    } else {
+      setFirebaseError("Failed to create account. Try again.");
     }
-  };
+  }
+};
 
   return (
     <AuthLayout>
@@ -158,7 +128,6 @@ export default function CreateAccount() {
         {firebaseError && <p className={styles.errorText}>{firebaseError}</p>}
 
         <form onSubmit={handleSubmit}>
-
           {/* FIRST NAME */}
           <label className={styles.label}>First Name</label>
           <input
@@ -179,20 +148,17 @@ export default function CreateAccount() {
             placeholder="Last Name"
           />
 
-          {/* PHONE NUMBER */}
-          <label className={styles.label}>Phone Number</label>
+          {/* EMAIL */}
+          <label className={styles.label}>Email</label>
           <input
             className={styles.input}
-            name="phone"
-            value={form.phone}
+            name="email"
+            value={form.email}
             onChange={handleChange}
-            placeholder="123-456-7890"
-            maxLength={12}
+            placeholder="email@example.com"
           />
-          {errors.phone && <p className={styles.errorText}>{errors.phone}</p>}
-          {phoneInUse && (
-            <p className={styles.errorText}>This phone number is already used.</p>
-          )}
+          {errors.email && <p className={styles.errorText}>{errors.email}</p>}
+          {emailInUse && <p className={styles.errorText}>This email is already registered.</p>}
 
           {/* PASSWORD */}
           <label className={styles.label}>Password</label>
@@ -205,20 +171,13 @@ export default function CreateAccount() {
               onChange={handleChange}
               placeholder="Password"
             />
-
-            <span
-              className={styles.eyeIcon}
-              onClick={() => setShowPassword(!showPassword)}
-            >
+            <span className={styles.eyeIcon} onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? "🙈" : "👁️"}
             </span>
           </div>
+          {errors.password && <p className={styles.errorText}>{errors.password}</p>}
 
-          {errors.password && (
-            <p className={styles.errorText}>{errors.password}</p>
-          )}
-
-          {/* Strength Bar */}
+          {/* STRENGTH BAR */}
           {form.password && (
             <div className={styles.strengthContainer}>
               <div
@@ -238,7 +197,6 @@ export default function CreateAccount() {
           {/* CONFIRM PASSWORD */}
           <label className={styles.label}>Confirm Password</label>
           <div className={styles.passwordInputContainer}>
-
             <input
               className={styles.input}
               type={showConfirmPassword ? "text" : "password"}
@@ -247,7 +205,6 @@ export default function CreateAccount() {
               onChange={handleChange}
               placeholder="Confirm Password"
             />
-
             <span
               className={styles.eyeIcon}
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -255,7 +212,6 @@ export default function CreateAccount() {
               {showConfirmPassword ? "🙈" : "👁️"}
             </span>
           </div>
-
           {errors.confirmPassword && (
             <p className={styles.errorText}>{errors.confirmPassword}</p>
           )}
@@ -264,25 +220,11 @@ export default function CreateAccount() {
           <button
             className={styles.button}
             type="submit"
-            disabled={
-              !allFieldsFilled ||
-              !noErrors ||
-              phoneInUse ||
-              checkingPhone
-            }
+            disabled={!allFieldsFilled || !noErrors || emailInUse || checkingEmail}
             style={{
-              opacity:
-                !allFieldsFilled ||
-                !noErrors ||
-                phoneInUse ||
-                checkingPhone
-                  ? 0.5
-                  : 1,
+              opacity: !allFieldsFilled || !noErrors || emailInUse || checkingEmail ? 0.5 : 1,
               cursor:
-                !allFieldsFilled ||
-                !noErrors ||
-                phoneInUse ||
-                checkingPhone
+                !allFieldsFilled || !noErrors || emailInUse || checkingEmail
                   ? "not-allowed"
                   : "pointer",
             }}
