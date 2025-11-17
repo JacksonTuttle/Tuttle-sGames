@@ -1,7 +1,7 @@
 import { useState } from "react";
 import GamesPage from "./GamesPage";
 import SettingsPage from "./SettingsPage";
-import "./HomePage.css";
+import "./css/HomePage.css";
 
 export default function HomePage() {
   const [tab, setTab] = useState("games");

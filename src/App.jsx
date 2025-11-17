@@ -3,7 +3,7 @@ import Login from "./pages/auth/Login";
 import CreateAccount from "./pages/auth/CreateAccount";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import HomePage from "./pages/HomePage";
-import GolfHowToPlayPage from "./pages/golf/GolfHowToPlayPage";
+import GolfHowToPlayPage from "./pages/games/golf/HowToPlay/GolfHowToPlayPage";
 
 
 export default function App() {
@@ -14,7 +14,7 @@ export default function App() {
         <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/golf/how-to-play" element={<GolfHowToPlayPage />} />
+        <Route path="/games/golf/how-to-play" element={<GolfHowToPlayPage />} />
       </Routes>
     </Router>
   );
