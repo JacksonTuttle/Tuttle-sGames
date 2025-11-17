@@ -1,7 +1,7 @@
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
-import "./SettingsPage.css";
+import "./css/SettingsPage.css";
 
 export default function SettingsPage() {
   const navigate = useNavigate();

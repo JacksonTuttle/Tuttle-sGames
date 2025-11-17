@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import "./GamesPage.css";
+import "./css/GamesPage.css";
 
 export default function GamesPage() {
   const location = useLocation();
@@ -32,7 +32,7 @@ export default function GamesPage() {
 
           <button
             className="game-btn"
-            onClick={() => navigate("/golf/how-to-play")}
+            onClick={() => navigate("/games/golf/how-to-play")}
           >
             How to Play
           </button>
