@@ -19,11 +19,6 @@
   animation: none;
 }
 
-html, body {
-  height: 100%;
-  overflow: hidden;
-}
-
 /* ============================ */
 /* HEADER SECTION */
 /* ============================ */
@@ -117,3 +112,9 @@ html, body {
 .howto-list li::marker {
   color: #84d2ff;
 }
+
+html, body {
+  overflow: auto !important;
+  height: auto !important;
+}
+
