@@ -1,0 +1,127 @@
+.ai-setup-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  padding: 24px;
+
+  color: white;
+  background: black;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  overflow-y: auto;
+}
+
+.ai-setup-title {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.ai-setup-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  padding: 18px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-setup-card label {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* ============================= */
+/* UPDATED SELECT + PLACEHOLDER  */
+/* ============================= */
+.ai-setup-card select {
+  padding: 12px;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+
+  /* Softer gray instead of pure white */
+  color: rgba(230, 230, 230, 0.85);
+
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+/* Placeholder style (when value="") */
+.ai-setup-card select:invalid {
+  color: rgba(255, 255, 255, 0.45);
+  font-style: italic;
+}
+
+/* Options inside dropdown */
+.ai-setup-card select option {
+  background: #1e1e1e; /* Dark dropdown panel */
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ============================= */
+/* BUTTON STYLES */
+/* ============================= */
+.ai-start-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 16px;
+
+  background: rgba(0, 150, 255, 0.4);
+  border: 1px solid rgba(0, 150, 255, 0.7);
+  color: white;
+
+  border-radius: 16px;
+  font-size: 1.3rem;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.ai-start-btn:hover {
+  background: rgba(0, 150, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.ai-back-btn {
+  width: fit-content;
+  padding: 10px;
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition: 0.25s ease;
+  margin-bottom: 10px;
+}
+
+.ai-back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-3px);
+}
+
+.howto-back-btn {
+  padding: 12px;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  cursor: pointer;
+  transition: 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
