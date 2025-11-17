@@ -1,0 +1,85 @@
+.games-page {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* CARD — ADDED BACKGROUND IMAGE + OVERLAY */
+.game-card {
+  background-image: url('/golf.png'); /* <--- moved here */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  border-radius: 18px;
+  padding: 18px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden; /* needed for overlay */
+}
+
+/* dark overlay for whole card */
+.game-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);  /* darker for readability */
+  z-index: 0;
+  border-radius: 18px;
+}
+
+/* header and expand content above overlay */
+.game-header,
+.game-expand {
+  position: relative;
+  z-index: 1;
+}
+
+/* HEADER */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding-bottom: 6px;
+}
+
+.game-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: white;
+  font-weight: 600;
+}
+
+/* EXPAND CONTAINER */
+.game-expand {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-top: 12px;
+  padding: 15px 0;
+  border-radius: 14px;
+}
+
+/* BUTTONS */
+.game-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: #ffffff15;
+  border: 1px solid #ffffff25;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.game-btn:hover {
+  background: #ffffff25;
+  transform: translateY(-2px);
+}
