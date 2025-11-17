@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react"; // optional icons
+import { useLocation, useNavigate } from "react-router-dom";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import "./GamesPage.css";
 
 export default function GamesPage() {
-  const [golfOpen, setGolfOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [golfOpen, setGolfOpen] = useState(location.state?.openGolf ?? false);
 
   return (
     <div className="games-page">
@@ -25,7 +29,14 @@ export default function GamesPage() {
         >
           <button className="game-btn">Host Game</button>
           <button className="game-btn">Join Game</button>
-          <button className="game-btn">How to Play</button>
+
+          <button
+            className="game-btn"
+            onClick={() => navigate("/golf/how-to-play")}
+          >
+            How to Play
+          </button>
+
           <button className="game-btn">Play Against AI</button>
         </div>
       </div>

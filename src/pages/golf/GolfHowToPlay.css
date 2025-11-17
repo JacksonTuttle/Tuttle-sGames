@@ -1,0 +1,119 @@
+/* ============================ */
+/* FULL PAGE WRAPPER */
+/* ============================ */
+.howto-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  padding: 24px;
+  color: white;
+
+  background: black;
+
+  /* Allow scrolling on mobile */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  /* Remove old blur/animation */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  animation: none;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ============================ */
+/* HEADER SECTION */
+/* ============================ */
+
+.howto-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.howto-back-btn {
+  padding: 12px;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  cursor: pointer;
+  transition: 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.howto-back-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateX(-3px);
+}
+
+/* ============================ */
+/* MAIN CARD */
+/* ============================ */
+
+.howto-card {
+  width: 100%;
+  border-radius: 22px;
+  padding: 28px 24px;
+
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+
+  /* subtle blur for glass effect */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+
+  /* remove slide animation */
+  animation: none;
+}
+
+/* ============================ */
+/* TITLES & TEXT */
+/* ============================ */
+
+.howto-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.howto-text {
+  opacity: 0.92;
+  font-size: 1rem;
+  line-height: 1.55rem;
+}
+
+/* ============================ */
+/* LISTS */
+/* ============================ */
+
+.howto-list {
+  margin-left: 20px;
+  opacity: 0.92;
+  font-size: 1rem;
+  line-height: 1.55rem;
+}
+
+.howto-list li {
+  margin-bottom: 8px;
+  padding-left: 4px;
+}
+
+/* Optional glowing bullet style */
+.howto-list li::marker {
+  color: #84d2ff;
+}
