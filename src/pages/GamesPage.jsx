@@ -7,7 +7,9 @@ export default function GamesPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [golfOpen, setGolfOpen] = useState(location.state?.openGolf ?? false);
+  const [golfOpen, setGolfOpen] = useState(
+    location.state?.openGolf || location.state?.expandGolf || false
+  );
 
   return (
     <div className="games-page">
@@ -37,7 +39,17 @@ export default function GamesPage() {
             How to Play
           </button>
 
-          <button className="game-btn">Play Against AI</button>
+          <button
+            className="game-btn"
+            onClick={() =>
+              navigate("/games/golf/play-against-ai-setup", {
+                state: { expandGolf: true },
+              })
+            }
+          >
+            Play Against AI
+          </button>
+          
         </div>
       </div>
 
