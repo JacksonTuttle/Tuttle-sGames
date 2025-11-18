@@ -5,6 +5,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import HomePage from "./pages/HomePage";
 import GolfHowToPlayPage from "./pages/games/golf/HowToPlay/GolfHowToPlayPage";
 import PlayAgainstAISetupPage from "./pages/games/golf/PlayAgainstAI/Setup/PlayAgainstAISetupPage";
+import PlayAgainstAIGamePage from "./pages/games/golf/PlayAgainstAI/Game/PlayAgainstAIGamePage";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/games/golf/how-to-play" element={<GolfHowToPlayPage />} />
         <Route path="/games/golf/play-against-ai-setup" element={<PlayAgainstAISetupPage />} />
+        <Route path="/games/golf/play-against-ai" element={<PlayAgainstAIGamePage />} />
       </Routes>
     </Router>
   );
