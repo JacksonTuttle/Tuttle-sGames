@@ -1,13 +1,18 @@
 /* ============================ */
 /* FULL PAGE WRAPPER */
 /* ============================ */
+/* ============================ */
+/* FULL PAGE WRAPPER */
+/* ============================ */
 .howto-wrapper {
   width: 100%;
   min-height: 100vh;
   padding: 24px;
-  color: white;
+  color: black;
+  text-shadow: white 0px 0px 8px;
 
-  background: black;
+  /* Background image */
+  background: url("/public/golf.png") center center / cover no-repeat fixed;
 
   /* Allow scrolling on mobile */
   overflow-y: auto;
@@ -18,6 +23,7 @@
   -webkit-backdrop-filter: none;
   animation: none;
 }
+
 
 /* ============================ */
 /* HEADER SECTION */
