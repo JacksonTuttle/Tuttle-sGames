@@ -125,3 +125,77 @@
   transform: translate(50%, -50%) rotate(-90deg);
   transform-origin: center center;
 }
+
+/* ------------------------------------------------ */
+/* MOBILE — SCALE EVERYTHING DOWN TO FIT           */
+/* ------------------------------------------------ */
+@media (max-width: 800px) {
+
+  /* Fill the screen, remove desktop padding */
+  .table {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  /* RESPONSIVE CARD SIZING */
+  .card-container,
+  .card-face,
+  .card-back {
+    width: 13vw !important;
+    height: 19vw !important;
+    max-width: 65px;
+    max-height: 95px;
+  }
+
+  .deck-card {
+    width: 13vw !important;
+    height: 19vw !important;
+    max-width: 65px;
+    max-height: 95px;
+  }
+
+  /* GRID SCALES WITH CARDS */
+  .grid-3x2 {
+    width: calc(13vw * 3 + 4vw);
+    gap: 2vw;
+  }
+
+  /* --- STACK DECK / DISCARD IN MIDDLE FOR MOBILE --- */
+  .center-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;     /* <- STACKED */
+    align-items: center;
+    justify-content: center;
+    gap: 12vw;
+  }
+
+  .ai-left,
+  .ai-right {
+    height: calc(13vw * 3 + 4vw);  /* exact height of a 3×2 card grid */
+    top: 50% !important;           /* ensure identical centering */
+  }
+  
+  /* --- ADD RESPONSIVE SIDE PADDING SO ROTATED AIs ARE NOT CUT OFF --- */
+  .ai-left {
+    left: 22vw;  /* pushes inward so it is fully visible */
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .ai-right {
+    right: 22vw; /* pushes inward so it is fully visible */
+    transform: translate(50%, -50%) rotate(-90deg);
+  }
+
+  /* Slightly smaller labels for mobile */
+  .player-label,
+  .pile-label {
+    font-size: 3vw;
+  }
+}
+
