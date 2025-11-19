@@ -10,7 +10,7 @@ export default function PlayAgainstAISetup() {
   const [rounds, setRounds] = useState("");
 
   const handleStart = () => {
-    navigate("/play-ai", {
+    navigate("/games/golf/play-against-ai", {
       state: {
         aiCount,
         rounds,
