@@ -3,6 +3,7 @@ import Login from "./pages/auth/Login";
 import CreateAccount from "./pages/auth/CreateAccount";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import HomePage from "./pages/HomePage";
+import ResetPassword from "./pages/auth/Resetpassword";
 
 import GolfHowToPlayPage from "./pages/games/golf/HowToPlay/GolfHowToPlayPage";
 import PlayAgainstAISetupPage from "./pages/games/golf/PlayAgainstAI/Setup/PlayAgainstAISetupPage";
