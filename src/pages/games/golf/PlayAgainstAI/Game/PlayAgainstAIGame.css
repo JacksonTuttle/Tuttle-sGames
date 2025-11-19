@@ -1,22 +1,85 @@
-.ai-game-wrapper {
+/* ------------------------------------------------ */
+/* BACKGROUND + WRAPPER                             */
+/* ------------------------------------------------ */
+
+.table {
+  position: relative;
   width: 100%;
-  min-height: 100vh;
-  padding: 20px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-
+  height: 100vh;
   background: #0f0f0f;
   color: white;
+  overflow: hidden;
+  padding: 80px;
 }
 
-/* Draw piles */
-.draw-area {
+/* ------------------------------------------------ */
+/* PLAYER AREAS                                     */
+/* ------------------------------------------------ */
+
+.player-area {
+  position: absolute;
+  transform-style: preserve-3d;
+  text-align: center;
+
+  /* ❗ REMOVE ALL FLEX — FLEX BREAKS ROTATION */
+}
+
+.player-label {
+  margin-bottom: 6px;
+  opacity: 0.8;
+  font-size: 1rem;
+}
+
+/* ------------------------------------------------ */
+/* PLAYER POSITIONS                                 */
+/* ------------------------------------------------ */
+
+.ai-top {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.player-bottom {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ai-left {
+  top: 50%;
+  left: 20px;
+}
+
+.ai-right {
+  top: 50%;
+  right: 20px;
+}
+
+/* ------------------------------------------------ */
+/* BASE GRID (UNROTATED)                            */
+/* ------------------------------------------------ */
+
+.grid-3x2 {
+  width: 200px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  transform-style: preserve-3d;
+}
+
+/* ------------------------------------------------ */
+/* CENTER AREA                                      */
+/* ------------------------------------------------ */
+
+.center-area {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   gap: 40px;
-  margin-bottom: 10px;
+  align-items: center;
 }
 
 .pile-container {
@@ -30,7 +93,6 @@
   opacity: 0.8;
 }
 
-/* Deck card back */
 .deck-card {
   width: 70px;
   height: 100px;
@@ -39,42 +101,27 @@
   border: 2px solid #444;
 }
 
-/* Drawn card */
-.drawn-card-area {
-  margin-top: -10px;
+.drawn-card {
+  margin-top: 10px;
   text-align: center;
 }
 
-.discard-btn {
-  margin-top: 8px;
-  padding: 10px 20px;
-  border-radius: 12px;
-  background: #444;
-  border: none;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
+/* ------------------------------------------------ */
+/* SIDE PLAYER ROTATION (THE FIX)                   */
+/* ------------------------------------------------ */
+
+.ai-left {
+  position: absolute;
+  top: 50%;
+  left: 130px;                 /* move closer/farther from edge as you like */
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center center;
 }
 
-.discard-btn:hover {
-  background: #555;
-}
-
-/* Grid layout */
-.player-grid {
-  width: 260px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.grid-slot {
-  cursor: pointer;
-}
-
-.section-label {
-  margin-bottom: -6px;
-  font-size: 1.4rem;
-  font-weight: 700;
-  text-align: center;
+.ai-right {
+  position: absolute;
+  top: 50%;
+  right: 130px;                /* move closer/farther from edge as you like */
+  transform: translate(50%, -50%) rotate(-90deg);
+  transform-origin: center center;
 }

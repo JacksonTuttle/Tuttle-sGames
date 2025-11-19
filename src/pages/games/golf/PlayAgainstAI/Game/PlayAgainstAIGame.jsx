@@ -195,62 +195,85 @@ export default function PlayAgainstAIGame({ aiCount, rounds }) {
   // 🔹 UI RENDER
   // ------------------------------
   return (
-    <div className="ai-game-wrapper">
+  <div className="table">
 
-      {/* DRAW AREA */}
-      <div className="draw-area">
-        <div className="pile-container" onClick={drawFromDeck}>
-          <div className="pile-label">Deck</div>
-          <div className="deck-card card-back"></div>
-        </div>
-
-        <div className="pile-container" onClick={drawFromDiscard}>
-          <div className="pile-label">Discard</div>
-
-          {discardPile.length > 0 ? (
-            <Card card={discardPile[discardPile.length - 1]} faceUp={true} />
-          ) : (
-            <div className="deck-card card-back"></div>
-          )}
+    {/* AI TOP (always AI #1) */}
+    {aiGrids[0] && (
+      <div className="ai-top player-area">
+        <div className="player-label">AI 1</div>
+        <div className="grid-3x2">
+          {aiGrids[0].map((card) => (
+            <Card key={card.id} card={card} faceUp={card.faceUp} />
+          ))}
         </div>
       </div>
+    )}
 
-      {/* DRAWN CARD */}
+{/* AI LEFT (AI #2) */}
+{aiGrids[1] && (
+  <div className="player-area ai-left">
+    <div className="player-label">AI 2</div>
+    <div className="grid-3x2">
+      {aiGrids[1].map((card) => (
+        <Card key={card.id} card={card} faceUp={card.faceUp} />
+      ))}
+    </div>
+  </div>
+)}
+
+{/* AI RIGHT (AI #3) */}
+{aiGrids[2] && (
+  <div className="player-area ai-right">
+    <div className="player-label">AI 3</div>
+    <div className="grid-3x2">
+      {aiGrids[2].map((card) => (
+        <Card key={card.id} card={card} faceUp={card.faceUp} />
+      ))}
+    </div>
+  </div>
+)}
+
+    {/* CENTER AREA (deck + discard + drawn card) */}
+    <div className="center-area">
+      <div className="pile-container" onClick={drawFromDeck}>
+        <div className="pile-label">Deck</div>
+        <div className="deck-card card-back"></div>
+      </div>
+
+      <div className="pile-container" onClick={drawFromDiscard}>
+        <div className="pile-label">Discard</div>
+        {discardPile.length > 0 ? (
+          <Card card={discardPile[discardPile.length - 1]} faceUp={true} />
+        ) : (
+          <div className="deck-card card-back"></div>
+        )}
+      </div>
+
       {drawnCard && (
-        <div className="drawn-card-area">
-          <h3>Drawn Card</h3>
+        <div className="drawn-card">
           <Card card={drawnCard} faceUp={true} />
-          <button className="discard-btn" onClick={discardDrawn}>
-            Discard
-          </button>
         </div>
       )}
+    </div>
 
-      {/* PLAYER GRID */}
-      <h2 className="section-label">
-        {phase === "initial-flip"
-          ? "Flip 2 Cards"
-          : "Your Grid"}
-      </h2>
-
-      <div className="player-grid">
+    {/* PLAYER BOTTOM (YOU) */}
+    <div className="player-bottom player-area">
+      <div className="player-label">You</div>
+      <div className="grid-3x2">
         {playerGrid.map((card, i) => (
           <div
             key={card.id}
             className="grid-slot"
             onClick={() =>
-              phase === "initial-flip"
-                ? handleInitialFlip(i)
-                : handleSwap(i)
+              phase === "initial-flip" ? handleInitialFlip(i) : handleSwap(i)
             }
           >
             <Card card={card} faceUp={card.faceUp} />
           </div>
         ))}
       </div>
-
-      {/* TODO → AI GRIDS HIDDEN FOR NOW */}
-
     </div>
-  );
+
+  </div>
+);
 }
