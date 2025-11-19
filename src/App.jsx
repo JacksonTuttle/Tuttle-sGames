@@ -16,6 +16,7 @@ export default function App() {
         <Route path="/create-account" element={<CreateAccount />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/home" element={<HomePage />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* How to Play */}
         <Route 
