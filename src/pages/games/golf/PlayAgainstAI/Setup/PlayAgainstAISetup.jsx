@@ -45,9 +45,9 @@ export default function PlayAgainstAISetup() {
           required
         >
           <option value="" disabled>Select AI Count...</option>
-          <option value={1}>1 AI</option>
-          <option value={2}>2 AIs</option>
-          <option value={3}>3 AIs</option>
+          <option value={1}>1</option>
+          <option value={2}>2</option>
+          <option value={3}>3</option>
         </select>
       </div>
 
