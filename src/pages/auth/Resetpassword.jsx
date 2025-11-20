@@ -21,15 +21,17 @@ export default function ResetPassword() {
   const [success, setSuccess] = useState("");
 
   // Extract oobCode from hash URL (HashRouter)
-  useEffect(() => {
+useEffect(() => {
+  // Give the bundle time to load before parsing URL
+  const timeout = setTimeout(() => {
     let params;
 
-    // URL looks like:  /#/reset-password?oobCode=XXX&mode=resetPassword&apiKey=...
+    // HASH ROUTER case
     if (window.location.hash.includes("?")) {
       const hashPart = window.location.hash.split("?")[1];
       params = new URLSearchParams(hashPart);
     } 
-    // (Failsafe: BrowserRouter)
+    // BrowserRouter fallback
     else {
       params = new URLSearchParams(window.location.search);
     }
@@ -52,7 +54,11 @@ export default function ResetPassword() {
         setError("Reset link is invalid or has expired.");
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, 150); // ← delay to allow hash to load
+
+  return () => clearTimeout(timeout);
+}, []);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
