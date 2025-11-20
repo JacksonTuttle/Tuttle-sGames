@@ -9,9 +9,11 @@ export default function ResetPassword() {
   const navigate = useNavigate();
 
   const [oobCode, setOobCode] = useState("");
-  const [validCode, setValidCode] = useState(false);
+  const [firebaseEmail, setFirebaseEmail] = useState(""); // email tied to the reset link
   const [loading, setLoading] = useState(true);
+  const [validCode, setValidCode] = useState(false);
 
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -20,8 +22,8 @@ export default function ResetPassword() {
 
   // Extract oobCode from URL
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("oobCode");
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("oobCode");
     setOobCode(code);
 
     if (!code) {
@@ -30,9 +32,10 @@ export default function ResetPassword() {
       return;
     }
 
-    // Verify code with Firebase
+    // Verify reset code
     verifyPasswordResetCode(auth, code)
-      .then(() => {
+      .then((emailFromFirebase) => {
+        setFirebaseEmail(emailFromFirebase);
         setValidCode(true);
       })
       .catch(() => {
@@ -45,6 +48,11 @@ export default function ResetPassword() {
     e.preventDefault();
     setError("");
 
+    if (email.trim().toLowerCase() !== firebaseEmail.toLowerCase()) {
+      setError("Email does not match the account associated with this reset link.");
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -52,7 +60,7 @@ export default function ResetPassword() {
 
     try {
       await confirmPasswordReset(auth, oobCode, password);
-      setSuccess("Password successfully reset! Redirecting to login...");
+      setSuccess("Password updated successfully! Redirecting to login...");
       setTimeout(() => navigate("/"), 2000);
     } catch (err) {
       console.error(err);
@@ -67,31 +75,58 @@ export default function ResetPassword() {
       <div className={styles.loginBox}>
         <h1 className={styles.title}>Reset Password</h1>
 
-        {error && <p className={styles.errorText}>{error}</p>}
+        {/* INVALID LINK */}
+        {error && !validCode && (
+          <>
+            <p className={styles.errorText}>{error}</p>
+            <button
+              className={styles.button}
+              onClick={() => navigate("/forgot-password")}
+            >
+              Request New Reset Link
+            </button>
+          </>
+        )}
+
+        {/* SUCCESS */}
         {success && <p className={styles.successText}>{success}</p>}
 
+        {/* FORM */}
         {validCode && !success && (
           <form onSubmit={handleSubmit}>
-            <label className={styles.label}>New Password</label>
+
+            {/* EMAIL */}
+            <label className={styles.label}>Email</label>
             <input
-              type="password"
               className={styles.input}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter new password"
+              type="email"
+              placeholder="email@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
+            {/* NEW PASSWORD */}
+            <label className={styles.label}>New Password</label>
+            <input
+              className={styles.input}
+              type="password"
+              placeholder="Enter new password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            {/* CONFIRM PASSWORD */}
             <label className={styles.label}>Confirm Password</label>
             <input
-              type="password"
               className={styles.input}
+              type="password"
+              placeholder="Confirm new password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm new password"
             />
 
             <button className={styles.button} type="submit">
-              Change Password
+              Update Password
             </button>
           </form>
         )}
