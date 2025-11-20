@@ -21,28 +21,36 @@ export default function ResetPassword() {
   const [success, setSuccess] = useState("");
 
   // Extract oobCode from URL
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("oobCode");
-    setOobCode(code);
+useEffect(() => {
+  let params;
 
-    if (!code) {
-      setError("Invalid or missing reset link.");
-      setLoading(false);
-      return;
-    }
+  // If using HashRouter, params live inside the hash
+  if (window.location.hash.includes("?")) {
+    const hash = window.location.hash.split("?")[1];
+    params = new URLSearchParams(hash);
+  } else {
+    params = new URLSearchParams(window.location.search);
+  }
 
-    // Verify reset code
-    verifyPasswordResetCode(auth, code)
-      .then((emailFromFirebase) => {
-        setFirebaseEmail(emailFromFirebase);
-        setValidCode(true);
-      })
-      .catch(() => {
-        setError("Reset link is invalid or has expired.");
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  const code = params.get("oobCode");
+  setOobCode(code);
+
+  if (!code) {
+    setError("Invalid or missing reset link.");
+    setLoading(false);
+    return;
+  }
+
+  verifyPasswordResetCode(auth, code)
+    .then((emailFromFirebase) => {
+      setFirebaseEmail(emailFromFirebase);
+      setValidCode(true);
+    })
+    .catch(() => {
+      setError("Reset link is invalid or has expired.");
+    })
+    .finally(() => setLoading(false));
+}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
