@@ -17,7 +17,7 @@ export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [error, setError] = useError("");
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   // Extract oobCode from hash URL (HashRouter)
