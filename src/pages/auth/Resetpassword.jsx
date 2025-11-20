@@ -9,7 +9,7 @@ export default function ResetPassword() {
   const navigate = useNavigate();
 
   const [oobCode, setOobCode] = useState("");
-  const [firebaseEmail, setFirebaseEmail] = useState(""); // email tied to the reset link
+  const [firebaseEmail, setFirebaseEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [validCode, setValidCode] = useState(false);
 
@@ -17,47 +17,49 @@ export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [error, setError] = useState("");
+  const [error, setError] = useError("");
   const [success, setSuccess] = useState("");
 
-  // Extract oobCode from URL
-useEffect(() => {
-  let params;
+  // Extract oobCode from hash URL (HashRouter)
+  useEffect(() => {
+    let params;
 
-  // If using HashRouter, params live inside the hash
-  if (window.location.hash.includes("?")) {
-    const hash = window.location.hash.split("?")[1];
-    params = new URLSearchParams(hash);
-  } else {
-    params = new URLSearchParams(window.location.search);
-  }
+    // URL looks like:  /#/reset-password?oobCode=XXX&mode=resetPassword&apiKey=...
+    if (window.location.hash.includes("?")) {
+      const hashPart = window.location.hash.split("?")[1];
+      params = new URLSearchParams(hashPart);
+    } 
+    // (Failsafe: BrowserRouter)
+    else {
+      params = new URLSearchParams(window.location.search);
+    }
 
-  const code = params.get("oobCode");
-  setOobCode(code);
+    const code = params.get("oobCode");
+    setOobCode(code);
 
-  if (!code) {
-    setError("Invalid or missing reset link.");
-    setLoading(false);
-    return;
-  }
+    if (!code) {
+      setError("Invalid or missing reset link.");
+      setLoading(false);
+      return;
+    }
 
-  verifyPasswordResetCode(auth, code)
-    .then((emailFromFirebase) => {
-      setFirebaseEmail(emailFromFirebase);
-      setValidCode(true);
-    })
-    .catch(() => {
-      setError("Reset link is invalid or has expired.");
-    })
-    .finally(() => setLoading(false));
-}, []);
+    verifyPasswordResetCode(auth, code)
+      .then((emailFromFirebase) => {
+        setFirebaseEmail(emailFromFirebase);
+        setValidCode(true);
+      })
+      .catch(() => {
+        setError("Reset link is invalid or has expired.");
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     if (email.trim().toLowerCase() !== firebaseEmail.toLowerCase()) {
-      setError("Email does not match the account associated with this reset link.");
+      setError("Email does not match this reset request.");
       return;
     }
 
@@ -68,11 +70,11 @@ useEffect(() => {
 
     try {
       await confirmPasswordReset(auth, oobCode, password);
-      setSuccess("Password updated successfully! Redirecting to login...");
+      setSuccess("Password updated! Redirecting to login...");
       setTimeout(() => navigate("/"), 2000);
     } catch (err) {
       console.error(err);
-      setError("Failed to reset password. Please try again.");
+      setError("Password reset failed. Try again.");
     }
   };
 
@@ -83,57 +85,47 @@ useEffect(() => {
       <div className={styles.loginBox}>
         <h1 className={styles.title}>Reset Password</h1>
 
-        {/* INVALID LINK */}
         {error && !validCode && (
           <>
             <p className={styles.errorText}>{error}</p>
-            <button
-              className={styles.button}
-              onClick={() => navigate("/forgot-password")}
-            >
+            <button className={styles.button} onClick={() => navigate("/forgot-password")}>
               Request New Reset Link
             </button>
           </>
         )}
 
-        {/* SUCCESS */}
         {success && <p className={styles.successText}>{success}</p>}
 
-        {/* FORM */}
         {validCode && !success && (
           <form onSubmit={handleSubmit}>
-
-            {/* EMAIL */}
             <label className={styles.label}>Email</label>
             <input
-              className={styles.input}
               type="email"
-              placeholder="email@example.com"
+              className={styles.input}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="email@example.com"
             />
 
-            {/* NEW PASSWORD */}
             <label className={styles.label}>New Password</label>
             <input
-              className={styles.input}
               type="password"
-              placeholder="Enter new password"
+              className={styles.input}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter new password"
             />
 
-            {/* CONFIRM PASSWORD */}
             <label className={styles.label}>Confirm Password</label>
             <input
-              className={styles.input}
               type="password"
-              placeholder="Confirm new password"
+              className={styles.input}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm new password"
             />
 
-            <button className={styles.button} type="submit">
+            <button type="submit" className={styles.button}>
               Update Password
             </button>
           </form>
