@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { sendPasswordResetEmail, fetchSignInMethodsForEmail } from "firebase/auth";
+import { 
+  sendPasswordResetEmail, 
+  fetchSignInMethodsForEmail 
+} from "firebase/auth";
 import { auth } from "../../firebase";
 import AuthLayout from "./AuthLayout";
 import styles from "./Login.module.css";
@@ -22,16 +25,21 @@ export default function ForgotPassword() {
   }
 
   try {
-    const methods = await fetchSignInMethodsForEmail(auth, cleanEmail);
-
+    // 2️⃣ If a provider exists, send reset
     await sendPasswordResetEmail(auth, cleanEmail);
-    setMessage("Password reset link sent! Check your inbox/spam.");
+    setMessage("Password reset link sent! Check your inbox.");
 
   } catch (err) {
     console.error(err);
-    setError("Unable to reset password. Try again later.");
+
+    if (err.code === "auth/invalid-email") {
+      setError("Enter a valid email address.");
+    } else {
+      setError("Unable to reset password. Try again later.");
+    }
   }
 };
+
 
   return (
     <AuthLayout>
